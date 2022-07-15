@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# https://lynn-kwong.medium.com/use-pre-commit-commit-msg-and-pre-push-git-hooks-to-fix-your-python-code-asap-77d80d3ce412
+
+current_branch=`git rev-parse --abbrev-ref HEAD`
+commit_message=$(cat $1)
+
+exec < /dev/tty
+
+# Check commit message has multiple authors if on master
+if [[ $current_branch = master ]]; then
+    if ! [[ $commit_message =~ (Authors\:)|(Co\-authored\-by\:) ]]; then
+        echo "It appears you either don't have multiple authors or didn't include them in the commit message..."
+        read -p "Do you still want to commit (y/n)? " yn
+        case $yn in
+            [Yy]* ) echo "Continuing...";;
+            [Nn]* ) exit 1;;
+            * ) echo "Please answer y or n.";;
+        esac
+    fi
+fi
+
+# Check commit message starts with [TICKET_CODE/INIT/TECH]
+if ! [[ $commit_message =~ ^\[(([A-Za-z]+\-[0-9]+)|INIT|TECH)\] ]]; then
+    echo "It appears you didn't include [TICKET_CODE] at the start of the commit message..."
+    read -p "Do you still want to commit (y/n)? " yn
+    case $yn in
+        [Yy]* ) echo "Continuing...";;
+        [Nn]* ) exit 1;;
+        * ) echo "Please answer y or n.";;
+    esac
+fi

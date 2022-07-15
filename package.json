@@ -1,0 +1,9 @@
+{
+  "name": "gitprecommithook",
+  "version": "0.0.1",
+  "description": "Check if multiple authors are present in commit if on master.",
+  "scripts": {
+    "preinstall": "git config core.hooksPath gitHooks"
+  },
+  "author": "@maweeks"
+}
